@@ -15,6 +15,18 @@ It's a memory box that smells like bread.
 - Every loaf is worth keeping, even the ones that came out a little flat.
 - Two bakers. That's the whole staff.
 
+## Layout
+
+```
+frontend/
+  index.html     login page
+  css/style.css  styles
+  js/login.js    login form logic
+docs/            notes (the real docs live in the GitHub Wiki)
+```
+
+Open `frontend/index.html` in a browser. No build step.
+
 ## Status
 
 Preheating. 🥖
