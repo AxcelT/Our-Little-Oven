@@ -19,10 +19,11 @@ It's a memory box that smells like bread.
 
 ```
 frontend/
-  index.html     login page
-  css/style.css  styles
-  js/login.js    login form logic
-docs/            notes (the real docs live in the GitHub Wiki)
+  index.html      login page
+  css/style.css   styles
+  js/sprites.js   pixel-art sprites (oven, bread, bakers)
+  js/login.js     login form logic
+docs/             notes (the real docs live in the GitHub Wiki)
 ```
 
 Open `frontend/index.html` in a browser. No build step.

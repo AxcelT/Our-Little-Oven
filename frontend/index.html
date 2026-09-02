@@ -4,24 +4,65 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Our Little Oven</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-  <main class="card">
-    <h1>Our Little Oven</h1>
-    <p class="tagline">Two bakers. That's the whole staff.</p>
+  <div class="screen">
 
-    <form id="login-form">
-      <label for="email">Email</label>
-      <input type="email" id="email" name="email" placeholder="you@example.com" />
+    <div class="hearth">
+      <div class="hearth-glow"></div>
 
-      <label for="password">Password</label>
-      <input type="password" id="password" name="password" placeholder="••••••••" />
+      <div class="rack">
+        <div class="sprite-slot bob-1" data-sprite="bun"></div>
+        <div class="sprite-slot bob-2" data-sprite="boule"></div>
+        <div class="sprite-slot bob-3" data-sprite="baguette"></div>
+      </div>
+      <div class="shelf"></div>
 
-      <button type="submit">Come in 🥖</button>
-    </form>
-  </main>
+      <div class="oven-wrap">
+        <div class="steam">
+          <span></span><span></span><span></span>
+        </div>
+        <div class="sprite-slot" data-sprite="oven"></div>
+        <div class="door-glow"></div>
+      </div>
 
+      <p class="temp">preheated · 232°C</p>
+
+      <div class="scanlines"></div>
+    </div>
+
+    <main class="panel">
+      <div class="panel-head">
+        <h1>Our Little<br />Oven</h1>
+        <div class="staff">
+          <div class="bakers">
+            <div class="sprite-slot" data-sprite="baker-1"></div>
+            <div class="sprite-slot" data-sprite="baker-2"></div>
+          </div>
+          <p>Two bakers.<br />That's the whole staff.<i class="caret"></i></p>
+        </div>
+      </div>
+
+      <form id="login-form">
+        <label for="email">EMAIL</label>
+        <input type="email" id="email" name="email" placeholder="you@example.com" />
+
+        <label for="password">PASSWORD</label>
+        <input type="password" id="password" name="password" placeholder="••••••••" />
+
+        <button type="submit">Come in 🥖</button>
+      </form>
+
+      <p class="footnote"><span class="pip"></span>Nothing gets thrown out.</p>
+    </main>
+
+  </div>
+
+  <script src="js/sprites.js"></script>
   <script src="js/login.js"></script>
 </body>
 </html>
