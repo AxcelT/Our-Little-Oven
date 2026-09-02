@@ -24,6 +24,7 @@ backend/
 docker-compose.yml  postgres + minio for local dev
 frontend/
   index.html      login page
+  dashboard.html  the rack (placeholder)
   css/style.css   styles
   js/sprites.js   pixel-art sprites (oven, bread, bakers)
   js/login.js     login form logic

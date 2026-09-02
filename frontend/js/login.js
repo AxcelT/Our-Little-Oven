@@ -7,4 +7,6 @@ form.addEventListener("submit", (event) => {
   const password = document.getElementById("password").value;
 
   console.log("Login attempt:", { email, password });
+
+  window.location.href = "dashboard.html";
 });
