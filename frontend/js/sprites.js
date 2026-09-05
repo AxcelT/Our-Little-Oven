@@ -119,32 +119,46 @@ function renderSprite(map, palette, scale) {
   return wrap;
 }
 
-/* Fill every [data-sprite] slot on the page. */
-document.querySelectorAll("[data-sprite]").forEach((slot) => {
-  const name = slot.dataset.sprite;
-  const scale = SCALES[name] || 4;
-  const map = MAPS[name] || MAPS[name.replace(/-\d+$/, "")];
-  const palette =
-    PALETTES[name] ||
-    (name === "oven" ? PALETTES.oven : PALETTES.bread);
+const fireIntervals = [];
 
-  slot.appendChild(renderSprite(map, palette, scale));
+/* Stop every running fire animation (call before re-rendering sprite slots). */
+function clearFireIntervals() {
+  fireIntervals.forEach(clearInterval);
+  fireIntervals.length = 0;
+}
 
-  /* The oven gets an animated fire in its door opening (cols 4-11, rows 8-10). */
-  if (name === "oven") {
-    const fire = document.createElement("div");
-    fire.style.position = "absolute";
-    fire.style.left = 4 * scale + "px";
-    fire.style.top = 8 * scale + "px";
-    slot.firstChild.appendChild(fire);
+/* Fill every [data-sprite] slot under root. data-scale overrides the default scale. */
+function fillSprites(root) {
+  root.querySelectorAll("[data-sprite]").forEach((slot) => {
+    const name = slot.dataset.sprite;
+    const scale = Number(slot.dataset.scale) || SCALES[name] || 4;
+    const map = MAPS[name] || MAPS[name.replace(/-\d+$/, "")];
+    const palette =
+      PALETTES[name] ||
+      (name === "oven" ? PALETTES.oven : PALETTES.bread);
 
-    let frame = 0;
-    const drawFire = () => {
-      fire.innerHTML = "";
-      fire.appendChild(renderSprite(FIRE_FRAMES[frame], PALETTES.oven, scale));
-      frame = (frame + 1) % FIRE_FRAMES.length;
-    };
-    drawFire();
-    setInterval(drawFire, 1000 / 7);
-  }
-});
+    slot.appendChild(renderSprite(map, palette, scale));
+
+    /* The oven gets an animated fire in its door opening (cols 4-11, rows 8-10). */
+    if (name === "oven") {
+      const fire = document.createElement("div");
+      fire.style.position = "absolute";
+      fire.style.left = 4 * scale + "px";
+      fire.style.top = 8 * scale + "px";
+      slot.firstChild.appendChild(fire);
+
+      let frame = 0;
+      const drawFire = () => {
+        fire.innerHTML = "";
+        fire.appendChild(renderSprite(FIRE_FRAMES[frame], PALETTES.oven, scale));
+        frame = (frame + 1) % FIRE_FRAMES.length;
+      };
+      drawFire();
+      fireIntervals.push(setInterval(drawFire, 1000 / 7));
+    }
+  });
+}
+
+window.OvenSprites = { fill: fillSprites, clearFire: clearFireIntervals };
+
+fillSprites(document);

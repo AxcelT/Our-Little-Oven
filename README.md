@@ -18,13 +18,8 @@ It's a memory box that smells like bread.
 ## Layout
 
 ```
-backend/
-  app/            FastAPI app, config, models
-  alembic/        migrations
-docker-compose.yml  postgres + minio for local dev
 frontend/
   index.html      login page
-  dashboard.html  the rack (placeholder)
   css/style.css   styles
   js/sprites.js   pixel-art sprites (oven, bread, bakers)
   js/login.js     login form logic
@@ -32,14 +27,6 @@ docs/             notes (the real docs live in the GitHub Wiki)
 ```
 
 Open `frontend/index.html` in a browser. No build step.
-
-Backend:
-
-```bash
-docker compose up -d
-pip install -r backend/requirements.txt
-cd backend && alembic upgrade head && uvicorn app.main:app --reload
-```
 
 ## Status
 
