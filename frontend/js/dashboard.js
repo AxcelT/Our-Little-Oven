@@ -1,21 +1,22 @@
+/* Seed loaves, shaped like the backend's Loaf model (title, body, author, happens_on). */
 const LOAVES = {
   recipe: [
-    { title: "Learn focaccia", note: "The dimpled kind, with rosemary.", who: "Zoie", when: "someday" },
-    { title: "Fix the hall shelf", note: "It has leaned since March.", who: "Axcel", when: "someday" },
-    { title: "Winter soup week", note: "Seven nights, seven pots.", who: "Zoie", when: "someday" }
+    { title: "Learn focaccia", body: "The dimpled kind, with rosemary.", author: "Zoie", happens_on: null },
+    { title: "Fix the hall shelf", body: "It has leaned since March.", author: "Axcel", happens_on: null },
+    { title: "Winter soup week", body: "Seven nights, seven pots.", author: "Zoie", happens_on: null }
   ],
   proofing: [
-    { title: "Lisbon, in October", note: "Flights held, nothing booked.", who: "Axcel", when: "12 OCT" },
-    { title: "Mum's birthday dinner", note: "She asked for the lemon one.", who: "Zoie", when: "20 SEP" }
+    { title: "Lisbon, in October", body: "Flights held, nothing booked.", author: "Axcel", happens_on: "2026-10-12" },
+    { title: "Mum's birthday dinner", body: "She asked for the lemon one.", author: "Zoie", happens_on: "2026-09-20" }
   ],
   baking: [
-    { title: "Sourdough starter, day 4", note: "Fed at 8pm. Smells like yoghurt.", who: "Axcel", when: "since 28 Aug" }
+    { title: "Sourdough starter, day 4", body: "Fed at 8pm. Smells like yoghurt.", author: "Axcel", happens_on: "2026-08-28" }
   ],
   cooled: [
-    { title: "The flat white flat", note: "Two years in the small kitchen.", who: "both", when: "Jun 2024" },
-    { title: "Cinnamon buns, try two", note: "Better. Still a little pale.", who: "Zoie", when: "Feb 2025" },
-    { title: "Christmas at the cabin", note: "Snowed in, on purpose.", who: "both", when: "Dec 2025" },
-    { title: "Bike trip to the coast", note: "84km and one flat tyre.", who: "Axcel", when: "May 2026" }
+    { title: "The flat white flat", body: "Two years in the small kitchen.", author: "Axcel", happens_on: "2024-06-01" },
+    { title: "Cinnamon buns, try two", body: "Better. Still a little pale.", author: "Zoie", happens_on: "2025-02-01" },
+    { title: "Christmas at the cabin", body: "Snowed in, on purpose.", author: "Zoie", happens_on: "2025-12-01" },
+    { title: "Bike trip to the coast", body: "84km and one flat tyre.", author: "Axcel", happens_on: "2026-05-01" }
   ]
 };
 
@@ -29,6 +30,16 @@ const META = {
 const ORDER = ["recipe", "proofing", "baking", "cooled"];
 
 const clone = (o) => JSON.parse(JSON.stringify(o));
+
+/* Display text for a loaf's date, which reads differently in each stage. */
+function whenLabel(loaf, stage) {
+  if (!loaf.happens_on) return "someday";
+  const d = new Date(loaf.happens_on + "T00:00");
+  const month = d.toLocaleString("en", { month: "short" });
+  if (stage === "proofing") return `${d.getDate()} ${month.toUpperCase()}`;
+  if (stage === "baking") return `since ${d.getDate()} ${month}`;
+  return `${month} ${d.getFullYear()}`;
+}
 
 const state = { view: "kitchen", board: clone(LOAVES), dragging: null, over: null };
 
@@ -47,10 +58,10 @@ function renderKitchen() {
 
   const proofingRows = b.proofing.map((l) => `
     <article class="proofing-row">
-      <span class="date-chip">${l.when}</span>
+      <span class="date-chip">${whenLabel(l, "proofing")}</span>
       <div>
         <h4>${l.title}</h4>
-        <p>${l.note}</p>
+        <p>${l.body}</p>
       </div>
     </article>
   `).join("");
@@ -62,7 +73,7 @@ function renderKitchen() {
       <div class="photo"><span>photo</span></div>
       <div class="body">
         <h4>${l.title}</h4>
-        <p>${l.when} · ${l.who}</p>
+        <p>${whenLabel(l, "cooled")} · ${l.author}</p>
       </div>
     </article>
   `).join("");
@@ -78,11 +89,11 @@ function renderKitchen() {
         <div class="hero-copy">
           <span class="chip-oven">in the oven · ${b.baking.length}</span>
           <h2>${hero ? hero.title : "Nothing in the oven"}</h2>
-          <p>${hero ? hero.note : "The oven is warm and empty. Move something over from the counter."}</p>
+          <p>${hero ? hero.body : "The oven is warm and empty. Move something over from the counter."}</p>
           <div class="hero-actions">
             ${hero ? `<button class="btn btn-amber" data-action="pull-hero">take it out to cool</button>` : ""}
             <button class="btn btn-ghost" data-action="go-view" data-view="counter">open the counter</button>
-            <span class="hero-when">${hero ? hero.when : "—"}</span>
+            <span class="hero-when">${hero ? whenLabel(hero, "baking") : "—"}</span>
           </div>
         </div>
       </section>
@@ -121,10 +132,10 @@ function renderCard(stage, item, index) {
       <article class="card ticket" draggable="true" data-stage="${stage}" data-index="${index}">
         <div class="torn-top"></div>
         <div class="body">
-          <div class="meta-row"><span>ORDER IN</span><span>${item.who}</span></div>
+          <div class="meta-row"><span>ORDER IN</span><span>${item.author}</span></div>
           <div class="divider"></div>
           <h3>${item.title}</h3>
-          <p>${item.note}</p>
+          <p>${item.body}</p>
           <div class="footer-row">
             <span>no date</span>
             <button class="advance-btn" data-action="advance" data-stage="${stage}" data-index="${index}">→ ${META[nextStage(stage)].label.toLowerCase()}</button>
@@ -141,10 +152,10 @@ function renderCard(stage, item, index) {
         <h3>${item.title}</h3>
         <div class="cloth">
           <div class="cloth-row">
-            <span class="date-chip">${item.when}</span>
+            <span class="date-chip">${whenLabel(item, stage)}</span>
             <span class="under-cloth">under cloth</span>
           </div>
-          <p>${item.note}</p>
+          <p>${item.body}</p>
         </div>
         <div class="advance-wrap">
           <button class="advance-btn" data-action="advance" data-stage="${stage}" data-index="${index}">→ ${META[nextStage(stage)].label.toLowerCase()}</button>
@@ -172,8 +183,8 @@ function renderCard(stage, item, index) {
     <article class="card keeper" draggable="true" data-stage="${stage}" data-index="${index}">
       <h3>${item.title}</h3>
       <div class="panel">
-        <p>${item.note}</p>
-        <div class="meta-row"><span>${item.when}</span><span>${item.who}</span></div>
+        <p>${item.body}</p>
+        <div class="meta-row"><span>${whenLabel(item, stage)}</span><span>${item.author}</span></div>
       </div>
       <div class="wire-rack"></div>
     </article>
