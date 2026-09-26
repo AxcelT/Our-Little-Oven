@@ -9,41 +9,22 @@ and look at them whenever we want.
 
 It's a memory box that smells like bread.
 
-## Rules of the kitchen
+## Run it
 
-- Nothing gets thrown out.
-- Every loaf is worth keeping, even the ones that came out a little flat.
-- Two bakers. That's the whole staff.
-
-## Layout
-
-```
-backend/
-  app/            FastAPI app, config, models
-  alembic/        migrations
-docker-compose.yml  postgres + minio for local dev
-frontend/
-  index.html      login page
-  dashboard.html  the kitchen + the counter
-  css/style.css   shared styles
-  css/dashboard.css  dashboard styles
-  js/sprites.js   pixel-art sprites (oven, bread, bakers)
-  js/sprites-32.js  32px oven sprite used on the dashboard
-  js/login.js     login form logic
-  js/dashboard.js dashboard state, rendering, drag-and-drop
-docs/             notes (the real docs live in the GitHub Wiki)
-```
-
-Open `frontend/index.html` in a browser. No build step.
-
-Backend:
+Needs Docker and Python 3.12.
 
 ```bash
-docker compose up -d
+docker compose up -d postgres
 pip install -r backend/requirements.txt
-cd backend && alembic upgrade head && uvicorn app.main:app --reload
+cd backend
+alembic upgrade head
+uvicorn app.main:app --reload
 ```
 
-## Status
+Then open http://localhost:8000.
 
-Preheating. 🥖
+Tests: `pytest` from `backend/`.
+
+## Docs
+
+Everything else lives in the [wiki](https://github.com/AxcelT/Our-Little-Oven/wiki).
