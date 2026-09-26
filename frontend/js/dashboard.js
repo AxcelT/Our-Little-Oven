@@ -84,7 +84,7 @@ function renderKitchen() {
         <div class="hero-glow"></div>
         <div class="hero-art">
           <div class="steam"><span></span><span></span><span></span></div>
-          <div class="sprite-slot" data-sprite="oven" data-scale="10"></div>
+          <pixel32-sprite name="oven" scale="5"></pixel32-sprite>
         </div>
         <div class="hero-copy">
           <span class="chip-oven">in the oven · ${b.baking.length}</span>
@@ -170,7 +170,7 @@ function renderCard(stage, item, index) {
         <h3>${item.title}</h3>
         <div class="art-well">
           <div class="glow"></div>
-          <div class="sprite-slot" data-sprite="oven" data-scale="6"></div>
+          <pixel32-sprite name="oven" scale="3"></pixel32-sprite>
         </div>
         <div class="advance-wrap">
           <button class="advance-btn" data-action="advance" data-stage="${stage}" data-index="${index}">→ ${META[nextStage(stage)].label.toLowerCase()}</button>
@@ -236,9 +236,7 @@ function render() {
   });
 
   const root = document.getElementById("view-root");
-  window.OvenSprites.clearFire();
   root.innerHTML = state.view === "kitchen" ? renderKitchen() : renderCounter();
-  window.OvenSprites.fill(root);
 }
 
 document.addEventListener("click", (e) => {
@@ -275,10 +273,13 @@ document.addEventListener("dragover", (e) => {
   if (!column) return;
   e.preventDefault();
   const stage = column.dataset.column;
-  if (state.over !== stage) {
-    state.over = stage;
-    render();
-  }
+  if (state.over === stage) return;
+  state.over = stage;
+  /* Toggle the highlight in place: re-rendering mid-drag would remove the dragged card. */
+  document.querySelectorAll(".column").forEach((col) => {
+    const hovered = col.dataset.column === stage && state.dragging && state.dragging.stage !== stage;
+    col.classList.toggle("drag-over", Boolean(hovered));
+  });
 });
 
 document.addEventListener("drop", (e) => {
