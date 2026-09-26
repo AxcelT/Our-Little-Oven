@@ -28,6 +28,7 @@ frontend/
   css/style.css   shared styles
   css/dashboard.css  dashboard styles
   js/sprites.js   pixel-art sprites (oven, bread, bakers)
+  js/sprites-32.js  32px oven sprite used on the dashboard
   js/login.js     login form logic
   js/dashboard.js dashboard state, rendering, drag-and-drop
 docs/             notes (the real docs live in the GitHub Wiki)
