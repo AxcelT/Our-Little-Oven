@@ -1,20 +1,24 @@
-from fastapi import APIRouter, Cookie, Depends, HTTPException, Response
+from fastapi import APIRouter, Cookie, Depends, HTTPException, Request, Response
 from sqlalchemy.orm import Session
 
 from app.config import settings
 from app.deps import COOKIE_NAME, current_user, get_db
 from app.models import User
 from app.schemas import LoginIn, UserOut
-from app.services import auth
+from app.services import auth, throttle
 
 router = APIRouter(prefix="/api")
 
 
 @router.post("/login", status_code=204)
-def login(body: LoginIn, response: Response, db: Session = Depends(get_db)):
+def login(body: LoginIn, request: Request, response: Response, db: Session = Depends(get_db)):
+    ip = request.client.host if request.client else "unknown"
+    if wait := throttle.try_attempt(ip):
+        raise HTTPException(status_code=429, detail="Too many tries", headers={"Retry-After": str(wait)})
     user = auth.authenticate(db, body.name, body.password)
     if user is None:
         raise HTTPException(status_code=401, detail="Wrong name or password")
+    throttle.clear(ip)
     response.set_cookie(
         COOKIE_NAME,
         auth.create_session(db, user),

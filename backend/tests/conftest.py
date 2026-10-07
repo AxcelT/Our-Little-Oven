@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 from app.db import Base, get_db
 from app.main import app
 from app.models import Role, User
+from app.services import throttle
 from app.services.auth import hash_password
 
 TEST_DATABASE_URL = os.environ.get(
@@ -26,6 +27,11 @@ def _create_database_if_missing(url: str) -> None:
         if not exists:
             conn.execute(text(f'CREATE DATABASE "{url.database}"'))
     admin.dispose()
+
+
+@pytest.fixture(autouse=True)
+def reset_throttle():
+    throttle.reset()
 
 
 @pytest.fixture(scope="session")

@@ -5,6 +5,7 @@ from fastapi.testclient import TestClient
 from app.deps import get_db, require_role
 from app.models import Role
 from app.routes import auth
+from app.services import throttle
 
 
 def login(client, name, password="password123"):
@@ -69,3 +70,33 @@ def test_member_allowed_by_require_role(role_client, make_user):
     make_user("zoie")
     login(role_client, "zoie")
     assert role_client.post("/write").status_code == 200
+
+
+def test_throttle_blocks_after_limit(client, make_user):
+    make_user("zoie")
+    for _ in range(throttle.LIMIT):
+        assert login(client, "zoie", "nope").status_code == 401
+
+    blocked = login(client, "zoie")  # right password, still blocked
+    assert blocked.status_code == 429
+    assert int(blocked.headers["Retry-After"]) > 0
+
+
+def test_throttle_window_expires(client, make_user, monkeypatch):
+    make_user("zoie")
+    for _ in range(throttle.LIMIT):
+        login(client, "zoie", "nope")
+
+    later = throttle._now() + throttle.WINDOW + 1
+    monkeypatch.setattr(throttle, "_now", lambda: later)
+    assert login(client, "zoie").status_code == 204
+
+
+def test_success_clears_throttle(client, make_user):
+    make_user("zoie")
+    for _ in range(throttle.LIMIT - 1):
+        login(client, "zoie", "nope")
+    assert login(client, "zoie").status_code == 204
+
+    for _ in range(throttle.LIMIT - 1):
+        assert login(client, "zoie", "nope").status_code == 401

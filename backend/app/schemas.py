@@ -1,11 +1,11 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 from app.models import Role
 
 
 class LoginIn(BaseModel):
-    name: str
-    password: str
+    name: str = Field(max_length=50)
+    password: str = Field(max_length=256)
 
 
 class UserOut(BaseModel):

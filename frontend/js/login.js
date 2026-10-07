@@ -28,8 +28,12 @@ form.addEventListener("submit", async (event) => {
     window.location.href = "dashboard.html";
     return;
   }
-  error.textContent = res && res.status === 401
-    ? "That's not the right name or password."
-    : "The oven isn't answering. Try again in a bit.";
+  if (res && res.status === 401) {
+    error.textContent = "That's not the right name or password.";
+  } else if (res && res.status === 429) {
+    error.textContent = "Too many tries. Wait a bit and try again.";
+  } else {
+    error.textContent = "The oven isn't answering. Try again in a bit.";
+  }
   error.hidden = false;
 });
