@@ -296,4 +296,20 @@ document.addEventListener("drop", (e) => {
   }
 });
 
-render();
+document.getElementById("logout").addEventListener("click", async (e) => {
+  e.preventDefault();
+  await fetch("/api/logout", { method: "POST" });
+  window.location.href = "/";
+});
+
+/* Signed-out visitors go back to the login page. */
+fetch("/api/me").then(async (res) => {
+  if (!res.ok) {
+    window.location.href = "/";
+    return;
+  }
+  const user = await res.json();
+  document.getElementById("signed-in-name").textContent =
+    user.name.charAt(0).toUpperCase() + user.name.slice(1);
+  render();
+});

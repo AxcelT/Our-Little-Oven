@@ -9,6 +9,8 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=ROOT_DIR / ".env", extra="ignore")
 
     database_url: str = "postgresql+psycopg://oven:oven@localhost:5432/oven"
+    cookie_secure: bool = False  # true in production, behind HTTPS
+    session_days: int = 30
 
 
 settings = Settings()

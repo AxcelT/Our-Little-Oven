@@ -227,6 +227,12 @@ input:focus {
   margin-bottom: 20px;
 }
 
+.login-error {
+  margin: -8px 0 16px;
+  font-size: 12px;
+  color: var(--crust-dark);
+}
+
 button {
   padding: 15px 14px;
   background: var(--ember);
