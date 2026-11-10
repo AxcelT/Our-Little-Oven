@@ -23,7 +23,14 @@ uvicorn app.main:app --reload
 
 Then open http://localhost:8000.
 
-Tests: `pytest` from `backend/`.
+There's no sign-up. Make an account from `backend/` (it asks for the password):
+
+```bash
+python -m app.cli add-user axcel --role admin
+```
+
+Tests: `pytest` from `backend/`. They need Postgres running and use their own
+`oven_test` database.
 
 ## Docs
 

@@ -52,7 +52,9 @@
         <input type="text" id="name" name="name" placeholder="your name" autocomplete="username" />
 
         <label for="password">PASSWORD</label>
-        <input type="password" id="password" name="password" placeholder="••••••••" />
+        <input type="password" id="password" name="password" placeholder="••••••••" autocomplete="current-password" />
+
+        <p id="login-error" class="login-error" hidden>That's not the right name or password.</p>
 
         <button type="submit">Come in 🥖</button>
       </form>
