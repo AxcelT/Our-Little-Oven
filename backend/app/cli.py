@@ -7,11 +7,11 @@ from sqlalchemy import select
 
 from app.db import SessionLocal
 from app.models import Role, User
-from app.services.auth import hash_password
+from app.services.auth import hash_password, normalize_name
 
 
 def add_user(name: str, role: Role) -> None:
-    name = name.strip().lower()
+    name = normalize_name(name)
     password = getpass.getpass("Password: ")
     if password != getpass.getpass("Again: "):
         sys.exit("Passwords don't match.")

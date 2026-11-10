@@ -25,6 +25,11 @@ def test_login_then_me(client, make_user):
     assert me.json()["role"] == "member"
 
 
+def test_login_ignores_case_and_spaces(client, make_user):
+    make_user("zoie")
+    assert login(client, "  ZOIE ").status_code == 204
+
+
 def test_wrong_password(client, make_user):
     make_user("zoie")
     assert login(client, "zoie", "nope").status_code == 401

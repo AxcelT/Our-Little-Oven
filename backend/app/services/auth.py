@@ -27,8 +27,13 @@ def verify_password(password_hash: str, password: str) -> bool:
         return False
 
 
+def normalize_name(name: str) -> str:
+    """The one rule for how names are stored and looked up."""
+    return name.strip().lower()
+
+
 def authenticate(db: Session, name: str, password: str) -> User | None:
-    user = db.scalar(select(User).where(User.name == name.strip().lower()))
+    user = db.scalar(select(User).where(User.name == normalize_name(name)))
     if user is None:
         verify_password(DUMMY_HASH, password)
         return None
